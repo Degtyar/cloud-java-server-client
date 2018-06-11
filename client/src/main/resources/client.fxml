@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <SplitPane dividerPositions="0.5" prefHeight="227.0" prefWidth="600.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="122.0" prefWidth="297.0">
+               <children>
+                  <ListView fx:id="fileListClient" layoutX="14.0" layoutY="-24.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children></AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <ListView fx:id="fileListServer" layoutX="26.0" layoutY="-6.0" prefHeight="200.0" prefWidth="235.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children></AnchorPane>
+        </items>
+      </SplitPane>
+      <Pane prefHeight="107.0" prefWidth="600.0">
+         <children>
+            <Button fx:id="openFolder" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#openFolder" prefHeight="32.0" prefWidth="167.0" text="Open" />
+            <Button fx:id="serverSync" layoutX="397.0" layoutY="47.0" mnemonicParsing="false" onAction="#serverSync" prefHeight="32.0" prefWidth="152.0" text="Sync" />
+            <TextField fx:id="pathField" layoutX="14.0" layoutY="20.0" onAction="#openFolder" promptText="Folder" />
+            <Label layoutX="98.0" prefHeight="18.0" prefWidth="72.0" text="File client" />
+            <Label layoutX="401.0" prefHeight="18.0" prefWidth="72.0" text="File server" />
+            <ProgressBar fx:id="progressBar" layoutX="224.0" layoutY="10.0" prefHeight="20.0" prefWidth="152.0" progress="0.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="10.0" layoutY="170.0" prefHeight="128.0" prefWidth="600.0">
+         <children>
+            <TextField fx:id="loginField" layoutX="14.0" layoutY="8.0" promptText="Login" />
+            <PasswordField fx:id="passField" layoutX="14.0" layoutY="34.0" promptText="Pass" />
+            <TextField fx:id="serverField" layoutX="181.0" layoutY="8.0" promptText="Server" text="localhost" />
+            <TextField fx:id="portField" layoutX="181.0" layoutY="34.0" promptText="Port" text="8888" />
+            <Button fx:id="onConnect" layoutX="181.0" layoutY="61.0" mnemonicParsing="false" onAction="#tryConnect" prefHeight="34.0" prefWidth="167.0" text="Connect" />
+            <TextArea fx:id="statInfo" layoutX="383.0" layoutY="1.0" prefHeight="101.0" prefWidth="213.0" />
+            <Label layoutX="383.0" layoutY="105.0" prefHeight="18.0" prefWidth="152.0" text="Connection status" />
+            <Button fx:id="create" layoutX="14.0" layoutY="61.0" mnemonicParsing="false" onAction="#createUser" prefHeight="34.0" prefWidth="167.0" text="Create user" />
+         </children>
+      </Pane>
+   </children>
+</VBox>
