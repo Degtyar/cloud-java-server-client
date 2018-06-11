@@ -49,7 +49,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Функция сохранения полей на клиенте
+     * Метод сохранения полей на клиенте
      */
     public void saveProperty () {
         propertyRead.setProperty("login",loginField.getText());
@@ -60,7 +60,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Функция определения текущей деректории синхронзации
+     * Метод определения текущей деректории синхронзации
      */
     public void setCarentFolder() {
         this.carentFolder = pathField.getText();
@@ -69,7 +69,7 @@ public class Controller implements Initializable {
 
     /**
      * @param trigger
-     * Функция доступа к элементам управления блока клиента
+     * Метод доступа к элементам управления блока клиента
      */
 
     private void GuiClient(Boolean trigger) {
@@ -81,7 +81,7 @@ public class Controller implements Initializable {
 
     /**
      * @param trigger
-     * функция открытия кнопки создания клиента
+     * Метод открытия кнопки создания клиента
      */
     private void buttonCreateVisible(Boolean trigger){
         create.setVisible(trigger);
@@ -90,7 +90,7 @@ public class Controller implements Initializable {
 
     /**
      * @param trigger
-     * Функция управления элементами подключения к серверу
+     * Метод управления элементами подключения к серверу
      */
     private void GuiConnect (Boolean trigger) {
         loginField.setDisable(trigger);
@@ -103,7 +103,7 @@ public class Controller implements Initializable {
 
     /**
      * @throws Exception
-     * Функция чтения информации из папки
+     * Метод чтения информации из папки
      */
     public void openFolder () throws Exception {
         setCarentFolder();
@@ -112,7 +112,7 @@ public class Controller implements Initializable {
 
 
     /**
-     * Функция чтения содержимого папки пользователя
+     * Метод чтения содержимого папки пользователя
      */
     public void readClientFolder () {
         Platform.runLater( () -> {
@@ -133,7 +133,7 @@ public class Controller implements Initializable {
 
     /**
      * @return
-     * Функция создания обекта пользователя на соновании логина и правлоя
+     * Метод создания обекта пользователя на соновании логина и правлоя
      */
     private boolean setUser() {
         if(!loginField.getText().equals("") && !passField.getText().equals("")){
@@ -146,7 +146,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Функция задания параментов подключения к серверу
+     * Метод задания параментов подключения к серверу
      */
     private void setParamConnect (){
         serverPort = Integer.parseInt(portField.getText());
@@ -185,7 +185,7 @@ public class Controller implements Initializable {
 
     /**
      * @throws Exception
-     * Функция создания соедниения к серверу
+     * Метод создания соедниения к серверу
      */
     private void connect() throws Exception {
         if(!setUser()) return;
@@ -232,7 +232,7 @@ public class Controller implements Initializable {
     /**
      * @param msg
      * @throws Exception
-     * Функция отправки сообщения в сторону сервера
+     * Метод отправки сообщения в сторону сервера
      */
     private void sendMsgToServer(AbsMsg msg) throws Exception{
         Network.getInstance().sendObject(msg);
@@ -241,7 +241,7 @@ public class Controller implements Initializable {
 
     /**
      * @throws Exception
-     * Функция отправки содержимого папки клиента в сторону сервера
+     * Метод отправки содержимого папки клиента в сторону сервера
      */
     public void serverSync () throws Exception{
         ObservableList<String> filesInList =  fileListClient.getItems();
@@ -252,7 +252,7 @@ public class Controller implements Initializable {
     /**
      * @param filesInList
      * @throws Exception
-     * Функция оправки файлов в сторону сервера
+     * Метод оправки файлов в сторону сервера
      */
     public void sendFile(ObservableList<String> filesInList) throws Exception {
         FileMsg file;
@@ -265,7 +265,7 @@ public class Controller implements Initializable {
 
     /**
      * @param msg
-     * функция обработки событий от сервера
+     * Метод обработки событий от сервера
      */
     private void controllerMsg (Object msg) {
         switch (((AbsMsg) msg).getTypeMsg()) {
@@ -298,7 +298,7 @@ public class Controller implements Initializable {
 
 
     /**
-     * Функция создания контекстного меню экрана клиента и обработки событий
+     * Метод создания контекстного меню экрана клиента и обработки событий
      */
     private void setContextMenuClient () {
         ContextMenu contextMenuClient = new ContextMenu();
@@ -344,7 +344,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Функция создания контекстного меню экрана сервера и обработки событий
+     * Метод создания контекстного меню экрана сервера и обработки событий
      */
     private void setContextMenuServer () {
         ContextMenu contextMenuClient = new ContextMenu();
