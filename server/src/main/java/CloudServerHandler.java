@@ -64,7 +64,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                         ctx.write(new StatusInfo("Error resource create"));
                     }
                 }
-                authorization = AuthService.tryAuth(user).equals(user.getLogin()) ? true : false;
+                authorization = AuthService.tryAuth(user).equals(user.getLogin());
                 if(authorization) {
                     ctx.write(user);
                     ctx.flush();
