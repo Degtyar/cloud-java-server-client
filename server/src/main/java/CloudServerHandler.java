@@ -15,6 +15,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
 
     private String rootDir;
     private UserCloud user;
+    private Boolean authorization = false;
 
     public CloudServerHandler(String rootDir) {
         this.rootDir = rootDir;
@@ -46,6 +47,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
+        authorization = false;
         user.setIsAuth(false);
         ctx.write(user);
         ctx.close();
@@ -58,10 +60,12 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                 if(user.isCreare()) {
                     if (createUserResource(user)){
                         ctx.write(new StatusInfo("Resource create"));
+                    } else {
+                        ctx.write(new StatusInfo("Error resource create"));
                     }
                 }
-                AuthService.tryAuth(user);
-                if(user.isAuth()) {
+                authorization = AuthService.tryAuth(user).equals(user.getLogin()) ? true : false;
+                if(authorization) {
                     ctx.write(user);
                     ctx.flush();
                     ctx.write(getUserFile());
@@ -71,12 +75,14 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                 }
                 break;
             case "sync":
+                if(!authorization) break;
                 ctx.write(writeFile(msg));
                 ctx.flush();
                 ctx.write(getUserFile());
                 ctx.flush();
                 break;
             case "fileList":
+                if(!authorization) break;
                 FileList fileList = (FileList) msg;
                 if(fileList.getTypeRequest() == FileList.TypeRequest.delete) {
                     delFile(ctx, fileList);
@@ -91,10 +97,10 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
 
     private StatusInfo writeFile (Object msg) throws Exception{
         FileMsg fileMsg = (FileMsg) msg;
-        File dir = new File(rootDir + "//" + user.getLogin() );
+        File dir = new File(rootDir + "/" + user.getLogin() );
         dir.mkdir();
         System.out.println(dir);
-        File file = new File(dir + "//" + fileMsg.getName());
+        File file = new File(dir + "/" + fileMsg.getName());
         System.out.println(file);
         file.createNewFile();
         FileOutputStream stream = new FileOutputStream(file,false);
