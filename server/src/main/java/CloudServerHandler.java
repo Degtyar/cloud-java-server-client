@@ -1,18 +1,22 @@
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.RandomAccessFile;
 import java.net.InetAddress;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class CloudServerHandler extends ChannelInboundHandlerAdapter {
 
+    public static final int SIZE_SET = 512000;
     private String rootDir;
     private UserCloud user;
     private Boolean authorization = false;
@@ -53,6 +57,12 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
+    /**
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     * Метод обработки сообщений
+     */
     private void controllerMsg (ChannelHandlerContext ctx, Object msg) throws Exception {
         switch (((AbsMsg) msg).getTypeMsg()) {
             case "user" :
@@ -64,21 +74,23 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                         ctx.write(new StatusInfo("Error resource create"));
                     }
                 }
-                authorization = AuthService.tryAuth(user).equals(user.getLogin());
+                authorization = AuthService.tryAuth(user) != null &&
+                                AuthService.tryAuth(user).equals(user.getLogin());
                 if(authorization) {
                     ctx.write(user);
                     ctx.flush();
                     ctx.write(getUserFile());
                     ctx.flush();
                 } else {
-                    ctx.write(new StatusInfo("Password or login invalide \n"));
+                    ctx.write(new StatusInfo("Password or login invalid"));
                 }
                 break;
             case "sync":
                 if(!authorization) break;
-                ctx.write(writeFile(msg));
-                ctx.flush();
-                ctx.write(getUserFile());
+                //ctx.write(writeFile(msg));
+                //ctx.flush();
+                writeFile(ctx, msg);
+               // ctx.write(getUserFile());
                 ctx.flush();
                 break;
             case "fileList":
@@ -91,28 +103,58 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
                 } else if (fileList.getTypeRequest() == FileList.TypeRequest.copy) {
                     copyFile(ctx, fileList);
                 }
+                break;
+            case "info":
+                StatusInfo statusInfo = (StatusInfo) msg;
+                if (statusInfo.getMassage().equals("reset_connect")){
+                    System.out.println("Client connected...");
+                    ctx.write(new StatusInfo("Server disconnect"));
+                    ctx.flush();
+                    ctx.channel().close();
+                }
 
         }
     }
+//
+//    private StatusInfo writeFile (Object msg) throws Exception{
+//        FileMsg fileMsg = (FileMsg) msg;
+//        File dir = new File(rootDir + "/" + user.getLogin() );
+//        dir.mkdir();
+//        System.out.println(dir);
+//        File file = new File(dir + "/" + fileMsg.getName());
+//        System.out.println(file);
+//        file.createNewFile();
+//        FileOutputStream stream = new FileOutputStream(file,false);
+//        try {
+//            stream.write(fileMsg.getData());
+//        } catch (Exception e) {
+//            return new StatusInfo("error: " + fileMsg.getName() + "\n");
+//        }
+//            finally {
+//            stream.close();
+//        }
+//        return new StatusInfo("copy: " + fileMsg.getName() + "\n");
+//    }
 
-    private StatusInfo writeFile (Object msg) throws Exception{
+
+    public void writeFile (ChannelHandlerContext ctx, Object msg) {
         FileMsg fileMsg = (FileMsg) msg;
-        File dir = new File(rootDir + "/" + user.getLogin() );
-        dir.mkdir();
-        System.out.println(dir);
-        File file = new File(dir + "/" + fileMsg.getName());
-        System.out.println(file);
-        file.createNewFile();
-        FileOutputStream stream = new FileOutputStream(file,false);
-        try {
-            stream.write(fileMsg.getData());
+        String folder = rootDir + "/" + user.getLogin();
+        String name = fileMsg.getName();
+        int size = fileMsg.getSize();
+        int set = fileMsg.getSet();
+        byte[] data = fileMsg.getData();
+        System.out.println(folder  + "/" + name);
+        try(RandomAccessFile file = new RandomAccessFile(folder  + "/" + name, "rw")){
+            file.seek(set * SIZE_SET);
+            file.write(data);
+            if(set == size) {
+                ctx.write(getUserFile());
+                ctx.flush();
+            }
         } catch (Exception e) {
-            return new StatusInfo("error: " + fileMsg.getName() + "\n");
+            e.printStackTrace();
         }
-            finally {
-            stream.close();
-        }
-        return new StatusInfo("copy: " + fileMsg.getName() + "\n");
     }
 
     private void delFile (ChannelHandlerContext ctx, FileList fileList) throws Exception {
@@ -130,15 +172,35 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void copyFile (ChannelHandlerContext ctx, FileList fileList){
-        for (String fileName : fileList.getListFile()) {
-            String carentFolder = rootDir + "/" + user.getLogin();
-            try {
-                FileMsg file = new FileMsg(carentFolder, fileName, AbsMsg.TypeMsg.sync);
+//    private void copyFile (ChannelHandlerContext ctx, FileList fileList){
+//        for (String fileName : fileList.getListFile()) {
+//            String carentFolder = rootDir + "/" + user.getLogin();
+//            try {
+//                FileMsg file = new FileMsg(carentFolder, fileName);
+//                ctx.write(file);
+//                ctx.flush();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    public void copyFile(ChannelHandlerContext ctx, FileList fileList) throws Exception {
+        System.out.println("Send------------");
+        FileMsg file;
+        byte[] data;
+        int size, set;
+        String currentFolder = rootDir + "/" + user.getLogin();
+        for (String nameFile : fileList.getListFile()){
+            Path fileLocation = Paths.get(currentFolder + "/"+ nameFile);
+            data = Files.readAllBytes(fileLocation);
+            size = (int) Math.ceil((float) data.length / SIZE_SET);
+            for (set = 0; set < size; set++){
+                int startCopy = set * SIZE_SET;
+                int endCopy = (startCopy + SIZE_SET) > data.length ? data.length : startCopy + SIZE_SET;
+                file = new FileMsg(nameFile, Arrays.copyOfRange(data, startCopy, endCopy),set ,size);
                 ctx.write(file);
                 ctx.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -148,6 +210,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
         Path paths = Paths.get(rootDir + "/" + user.getLogin() );
         DirectoryStream<Path> stream = Files.newDirectoryStream(paths, path -> path.toFile().isFile());
         result = CommonClass.pathToList(stream);
+        stream.close();
         return new FileList(result);
     }
 

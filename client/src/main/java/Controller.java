@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
@@ -11,6 +12,7 @@ import javafx.scene.input.ContextMenuEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.InetAddress;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -24,17 +26,21 @@ import java.util.*;
  * Класс обработки потока событий на клиенте
  */
 public class Controller implements Initializable {
+    public final int SIZE_SET = 512000;
     public PasswordField passField;
-    public ListView<String> fileListClient, fileListServer;
+    public ListView<String> fileListServer;
+    public ListView<String>fileListClient;
     public TextField loginField, pathField, serverField, portField;
     public TextArea statInfo;
-    public Button onConnect, serverSync, openFolder, create;
+    public Button onConnect, serverSync, openFolder, login;
     public ProgressBar progressBar;
+    public CheckBox chkCreate;
+    public Label labelInfo;
 
     private int serverPort;
     private InetAddress ipAddress;
     private UserCloud user;
-    private String carentFolder;
+    private String currentFolder;
     private PropertyRead propertyRead = new PropertyRead("./client/src/main/java/user.properties");
 
     /**
@@ -62,8 +68,8 @@ public class Controller implements Initializable {
     /**
      * Метод определения текущей деректории синхронзации
      */
-    public void setCarentFolder() {
-        this.carentFolder = pathField.getText();
+    public void setCurrentFolder() {
+        this.currentFolder = pathField.getText();
     }
 
 
@@ -83,8 +89,9 @@ public class Controller implements Initializable {
      * @param trigger
      * Метод открытия кнопки создания клиента
      */
-    private void buttonCreateVisible(Boolean trigger){
-        create.setVisible(trigger);
+    private void buttonLoginVisible(Boolean trigger){
+        login.setVisible(trigger);
+        chkCreate.setVisible(trigger);
     }
 
 
@@ -97,7 +104,7 @@ public class Controller implements Initializable {
         passField.setDisable(trigger);
         serverField.setDisable(trigger);
         portField.setDisable(trigger);
-        onConnect.setDisable(trigger);
+
     }
 
 
@@ -106,7 +113,7 @@ public class Controller implements Initializable {
      * Метод чтения информации из папки
      */
     public void openFolder () throws Exception {
-        setCarentFolder();
+        setCurrentFolder();
         readClientFolder();
     }
 
@@ -118,11 +125,14 @@ public class Controller implements Initializable {
         Platform.runLater( () -> {
             try {
                 List<String> result;
-                Path paths = Paths.get(carentFolder);
+                setCurrentFolder();
+                Path paths = Paths.get(currentFolder);
                 DirectoryStream<Path> stream = Files.newDirectoryStream(paths, path -> path.toFile().isFile());
                 result = CommonClass.pathToList(stream);
                 fileListClient.getItems().clear();
-                fileListClient.setItems(FXCollections.observableArrayList(result));
+                ObservableList<String> list = FXCollections.observableArrayList(result);
+                fileListClient.setItems(list);
+                list.add("sgsfgsfdg");
             } catch (IOException e) {
                 e.printStackTrace();
                 infoMassage("Error read client folder");
@@ -160,27 +170,30 @@ public class Controller implements Initializable {
 
     }
 
-
     /**
      * @throws Exception
-     * Фугкция обработки кнопки подключения к серверу
+     * Метод обработки кнопки подключения к серверу
      */
     public void tryConnect() throws Exception{
         connect();
-        sendMsgToServer(user);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fileListClient.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        fileListServer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        GuiClient(true);
-        buttonCreateVisible(false);
-        statInfo.setEditable(false);
-        setField ();
-        setContextMenuClient();
-        setContextMenuServer();
-
+        Platform.runLater(()-> {
+            fileListClient.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            fileListServer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            GuiClient(true);
+            buttonLoginVisible(false);
+            statInfo.setEditable(false);
+            setField();
+            setContextMenuClient();
+            setContextMenuServer();
+            progressBar.setVisible(false);
+            labelInfo.setVisible(false);
+            readClientFolder ();
+            fileListClient.setEditable(true);
+        });
     }
 
     /**
@@ -188,44 +201,78 @@ public class Controller implements Initializable {
      * Метод создания соедниения к серверу
      */
     private void connect() throws Exception {
+        Thread thread = new Thread(() -> {
+            try {
+                while (Network.getInstance().isConnected() && !Thread.currentThread().isInterrupted()) {
+                    Object msg = Network.getInstance().readObject();
+                    if (msg instanceof AbsMsg) {
+                        controllerMsg(msg);
+                    }
+                    Platform.runLater(() -> {
+                        if (user.isAuth()) {
+                            // Изменнение интерфейса
+                            GuiClient(false);
+                            GuiConnect(true);
+                            buttonLoginVisible(false);
+                        } else {
+                            // Изменнение интерфейса
+                            GuiClient(true);
+                            GuiConnect(false);
+                            buttonLoginVisible(true);
+                        }
+                    });
+                }
+
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    Network.getInstance().disconect();
+                    System.out.println("disconnect");
+                    infoMassage("Server disconnect");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         if(!setUser()) return;
         setParamConnect();
+
+        if (onConnect.getText().equals("Disconnect")) {
+            thread.interrupt();
+            user = null;
+            Platform.runLater(() -> {
+                fileListServer.getItems().clear();
+                GuiClient(true);
+                GuiConnect(false);
+                buttonLoginVisible(false);
+                onConnect.setText("Connect");
+            });
+            sendMsgToServer(new StatusInfo("reset_connect"));
+
+        }
+
         if (!Network.getInstance().isConnected()) {
             try {
                 Network.getInstance().connect(ipAddress, serverPort);
-                Thread thread = new Thread(() -> {
-                    try {
-                        while (Network.getInstance().isConnected()) {
-                            if (user.isAuth()){
-                                // Изменнение интерфейса
-                                GuiClient(false);
-                                GuiConnect(true);
-                                buttonCreateVisible(false);
-                            } else {
-                                // Изменнение интерфейса
-                                GuiClient(true);
-                                GuiConnect(false);
-                                buttonCreateVisible(true);
-                            }
-                            Object msg = Network.getInstance().readObject();
-                            if (msg instanceof AbsMsg) {
-                                controllerMsg(msg);
-                            }
-                        }
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                infoMassage("Server connect");
+                Platform.runLater( () -> onConnect.setText("Disconnect"));
+
                 thread.setDaemon(true);
                 thread.start();
+                setUser();
+                sendMsgToServer(user);
 
             } catch (IOException e) {
                 infoMassage("Server not answer ");
                 e.printStackTrace();
             }
         }
+
     }
 
 
@@ -236,7 +283,7 @@ public class Controller implements Initializable {
      */
     private void sendMsgToServer(AbsMsg msg) throws Exception{
         Network.getInstance().sendObject(msg);
-        System.out.println("Send msg");
+        System.out.println("Send massage to server");
     }
 
     /**
@@ -245,6 +292,7 @@ public class Controller implements Initializable {
      */
     public void serverSync () throws Exception{
         ObservableList<String> filesInList =  fileListClient.getItems();
+
         sendFile(filesInList);
     }
 
@@ -255,13 +303,47 @@ public class Controller implements Initializable {
      * Метод оправки файлов в сторону сервера
      */
     public void sendFile(ObservableList<String> filesInList) throws Exception {
-        FileMsg file;
-        for (String nameFiles : filesInList){
-            file = new FileMsg(carentFolder,nameFiles, AbsMsg.TypeMsg.sync);
-            sendMsgToServer(file);
-        }
-        System.out.println(Arrays.toString(filesInList.toArray()));
+        Thread thread;
+        thread = new Thread(() -> {
+            try {
+                Platform.runLater(() -> {
+                    progressBar.setVisible(true);
+                    labelInfo.setVisible(true);
+                });
+                String info;
+                FileMsg file;
+                byte[] data;
+                int size, set;
+                for (String nameFile : filesInList) {
+                    Path fileLocation = Paths.get(currentFolder + "/" + nameFile);
+                    data = Files.readAllBytes(fileLocation);
+                    size = (int) Math.ceil((float) data.length / SIZE_SET);
+                    System.out.println("Send file : " + nameFile + "-" + data.length + " \\ " + size);
+                    for (set = 0; set < size; set++) {
+                        final double progress = (double) set / size;
+                        Platform.runLater(() -> {
+                            progressBar.setProgress(progress);
+
+                            labelInfo.setText(nameFile.length() > 25 ? nameFile.substring(0,22) + "..." : nameFile);
+                        });
+                        int startCopy = set * SIZE_SET;
+                        int endCopy = (startCopy + SIZE_SET) > data.length ? data.length : startCopy + SIZE_SET;
+                        file = new FileMsg(nameFile, Arrays.copyOfRange(data, startCopy, endCopy), set, size - 1);
+                        sendMsgToServer(file);
+                    }
+                }
+                Platform.runLater(() -> {
+                    progressBar.setVisible(false);
+                    labelInfo.setVisible(false);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
+
 
     /**
      * @param msg
@@ -271,10 +353,9 @@ public class Controller implements Initializable {
         switch (((AbsMsg) msg).getTypeMsg()) {
             case "user":
                 user = (UserCloud) msg;
-                statInfo.appendText("Server connect \n" );
                 break;
             case "info":
-                statInfo.appendText(((StatusInfo) msg).getMassage());
+                infoMassage(((StatusInfo) msg).getMassage());
                 break;
             case "fileList":
                 Platform.runLater( () -> {
@@ -309,7 +390,7 @@ public class Controller implements Initializable {
                 ObservableList<String> files = fileListClient.getSelectionModel().getSelectedItems();
                 System.out.println(files.toString());
                 for (String fileName : files) {
-                    fileName = carentFolder + "/" + fileName;
+                    fileName = currentFolder + "/" + fileName;
                     System.out.println(fileName);
                     File file = new File(fileName);
                     if (file.delete()) {
@@ -318,7 +399,7 @@ public class Controller implements Initializable {
                         infoMassage("File delete error :" + fileName);
                     }
                 }
-                readClientFolder ();
+                readClientFolder();
             }
         });
 
@@ -326,19 +407,22 @@ public class Controller implements Initializable {
         copy.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                ObservableList<String> files = fileListClient.getSelectionModel().getSelectedItems();
-                try{
-                    sendFile(files);
-                }catch (Exception e){
-                    e.printStackTrace();
+                if (user != null && user.isAuth()) {
+                    ObservableList<String> files = fileListClient.getSelectionModel().getSelectedItems();
+                    try {
+                        sendFile(files);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+
         contextMenuClient.getItems().addAll(del, copy);
         fileListClient.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
             @Override
             public void handle(ContextMenuEvent event) {
-                contextMenuClient.show(fileListClient, event.getScreenX(), event.getScreenY());
+               contextMenuClient.show(fileListClient, event.getScreenX(), event.getScreenY());
             }
         });
     }
@@ -381,41 +465,77 @@ public class Controller implements Initializable {
         fileListServer.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
             @Override
             public void handle(ContextMenuEvent event) {
-                contextMenuClient.show(fileListServer, event.getScreenX(), event.getScreenY());
+                if (user != null && user.isAuth()) {
+                    contextMenuClient.show(fileListServer, event.getScreenX(), event.getScreenY());
+                }
             }
         });
     }
 
 
+    /**
+     * @param massage
+     * Метод отправки ниформационных сообщений клиенту
+     */
     private void infoMassage(String massage) {
-        statInfo.appendText(massage + "\n");
+        Platform.runLater( () -> statInfo.appendText(massage + "\n"));
     }
 
-    private void writeFile (Object msg) throws Exception{
+    /**
+     * @param msg
+     * @throws Exception
+     * Метод записи файла на клиента
+     */
+//    private void writeFile (Object msg) throws Exception{
+//        FileMsg fileMsg = (FileMsg) msg;
+//        File file = new File(currentFolder + fileMsg.getName());
+//        System.out.println(file);
+//        file.createNewFile();
+//        FileOutputStream stream = new FileOutputStream(file,false);
+//        try {
+//            stream.write(fileMsg.getData());
+//        } catch (Exception e) {
+//            infoMassage("error: " + fileMsg.getName());
+//        }
+//        finally {
+//            stream.close();
+//        }
+//        infoMassage("copy: " + fileMsg.getName());
+//    }
+
+    public void writeFile (Object msg) {
         FileMsg fileMsg = (FileMsg) msg;
-        File file = new File(carentFolder + fileMsg.getName());
-        System.out.println(file);
-        file.createNewFile();
-        FileOutputStream stream = new FileOutputStream(file,false);
-        try {
-            stream.write(fileMsg.getData());
+        String folder = currentFolder;
+        String name = fileMsg.getName();
+        int size = fileMsg.getSize();
+        int set = fileMsg.getSet();
+        byte[] data = fileMsg.getData();
+        System.out.println(folder  + "/" + name);
+        try(RandomAccessFile file = new RandomAccessFile(folder  + "/" + name, "rw")){
+            file.seek(set * SIZE_SET);
+            file.write(data);
         } catch (Exception e) {
-            infoMassage("error: " + fileMsg.getName());
+            e.printStackTrace();
         }
-        finally {
-            stream.close();
-        }
-        infoMassage("copy: " + fileMsg.getName());
     }
 
-    public void createUser() {
+    /**
+     * Метод создание нового пользователя на сервере
+     */
+    public void loginUser() {
         setUser();
-        user.setCreare(true);
+        if(chkCreate.isSelected()) user.setCreare(true);
         try {
             sendMsgToServer(user);
         }catch (Exception e){
             e.printStackTrace();
             infoMassage("Error create user");
         }
+    }
+
+    public void onEdit(ListView.EditEvent<String> stringEditEvent) {
+        String str = fileListClient.getSelectionModel().getSelectedItem();
+
+        System.out.println(str);
     }
 }

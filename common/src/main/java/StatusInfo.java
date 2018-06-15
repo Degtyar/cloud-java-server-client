@@ -3,7 +3,7 @@ public class StatusInfo extends AbsMsg {
 
     public StatusInfo (String massage){
         super(TypeMsg.info);
-        this.massage = massage + "\n";
+        this.massage = massage ;
     }
 
     public String getMassage() {

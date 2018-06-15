@@ -34,9 +34,14 @@ public class Network {
 
     public void sendObject (AbsMsg msg) throws Exception {
         out.writeObject(msg);
+        out.flush();
     }
 
     public Object readObject () throws IOException, ClassNotFoundException {
         return in.readObject();
+    }
+
+    public void disconect () throws Exception {
+        socket.close();
     }
 }

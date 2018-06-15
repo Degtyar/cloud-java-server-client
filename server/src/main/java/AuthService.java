@@ -2,11 +2,12 @@ import java.sql.*;
 
 public class AuthService {
     private static final String selectUserCloud = "SELECT login FROM users WHERE login = ? AND password = ?";
+    private static final String createDB = "CREATE TABLE IF NOT EXISTS \"users\" ( `id_users` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `login` TEXT NOT NULL, `password` TEXT NOT NULL )";
     private static final String createUserCloud = "INSERT INTO USERS (login,password) VALUES (? ,?)";
     private static final String checkUserCloud = "SELECT login FROM users WHERE login = ?";
     private static final String dbconnect = "jdbc:sqlite:users.db";
     private static Connection connection;
-    private static PreparedStatement pstTryAuth, pstCreateUser, chkUserCloud ;
+    private static PreparedStatement pstTryAuth, pstCreateUser, chkUserCloud, pstCreateDB ;
     private static ResultSet resultSet;
 
 
@@ -37,6 +38,13 @@ public class AuthService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            try {
+                pstCreateDB = connect().prepareStatement(createDB);
+                pstCreateDB.executeUpdate();
+            }catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
         }
         return null;
     }
