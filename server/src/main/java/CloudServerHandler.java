@@ -119,12 +119,12 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
      */
     public void writeFile (ChannelHandlerContext ctx, Object msg) {
         FileMsg fileMsg = (FileMsg) msg;
-        String folder = rootDir + "/" + user.getLogin();
+        String folder = rootDir + user.getLogin() + "/";
         String name = fileMsg.getName();
         int size = fileMsg.getSize();
         int set = fileMsg.getSet();
         byte[] data = fileMsg.getData();
-        System.out.println(folder  + "/" + name);
+        System.out.println(folder  + name);
         try(RandomAccessFile file = new RandomAccessFile(folder  + "/" + name, "rw")){
             file.seek(set * SIZE_SET);
             file.write(data);
@@ -147,7 +147,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
      */
     private void delFile (ChannelHandlerContext ctx, FileList fileList) throws Exception {
         for (String fileName : fileList.getListFile()) {
-            String fullFileName = rootDir + "/" + user.getLogin() + "/" + fileName;
+            String fullFileName = rootDir + user.getLogin() + "/" + fileName;
             System.out.println(fullFileName);
             File file = new File(fullFileName);
             if (file.delete()) {
@@ -170,9 +170,9 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
         FileMsg file;
         byte[] data;
         int size, set;
-        String currentFolder = rootDir + "/" + user.getLogin();
+        String currentFolder = rootDir + user.getLogin() + "/";
         for (String nameFile : fileList.getListFile()){
-            Path fileLocation = Paths.get(currentFolder + "/"+ nameFile);
+            Path fileLocation = Paths.get(currentFolder + nameFile);
             data = Files.readAllBytes(fileLocation);
             size = (int) Math.ceil((float) data.length / SIZE_SET);
             for (set = 0; set < size; set++){
@@ -192,7 +192,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
      */
     private FileList getUserFile() throws Exception {
         List<String> result;
-        Path paths = Paths.get(rootDir + "/" + user.getLogin() );
+        Path paths = Paths.get(rootDir  +  user.getLogin() + "/");
         DirectoryStream<Path> stream = Files.newDirectoryStream(paths, path -> path.toFile().isFile());
         result = CommonClass.pathToList(stream);
         stream.close();

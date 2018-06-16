@@ -196,6 +196,12 @@ public class Controller implements Initializable {
         connect();
     }
 
+    private void setInterfaceOnConnect(Boolean visible) {
+        GuiClient(!visible);
+        GuiConnect(visible);
+        buttonLoginVisible(!visible);
+
+    }
     /**
      * @throws Exception
      * Метод создания соедниения к серверу
@@ -211,14 +217,10 @@ public class Controller implements Initializable {
                     Platform.runLater(() -> {
                         if (user.isAuth()) {
                             // Изменнение интерфейса
-                            GuiClient(false);
-                            GuiConnect(true);
-                            buttonLoginVisible(false);
+                            setInterfaceOnConnect(true);
                         } else {
                             // Изменнение интерфейса
-                            GuiClient(true);
-                            GuiConnect(false);
-                            buttonLoginVisible(true);
+                            setInterfaceOnConnect(false);
                         }
                     });
                 }
@@ -355,7 +357,7 @@ public class Controller implements Initializable {
                 break;
             case "info":
                 infoMassage(((StatusInfo) msg).getMassage());
-                if(((StatusInfo) msg).getMassage().equals("Server disconnect"))
+            //    if(((StatusInfo) msg).getMassage().equals("Server disconnect"))
                 break;
             case "fileList":
                 Platform.runLater( () -> {
@@ -493,7 +495,7 @@ public class Controller implements Initializable {
         int size = fileMsg.getSize();
         int set = fileMsg.getSet();
         byte[] data = fileMsg.getData();
-        System.out.println(folder  + "/" + nameFile);
+        System.out.println(folder  + nameFile);
         try(RandomAccessFile file = new RandomAccessFile(folder  + "/" + nameFile, "rw")){
             if(size > 2){
                 Platform.runLater(() -> {
