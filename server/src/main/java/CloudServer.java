@@ -19,8 +19,12 @@ public class CloudServer {
     private int port;
     private int max_obj_size;
     private String rootDirUser;
-    public CloudServer() {
 
+
+    /**
+     * В конструктаре читаем параметры из файла свойств
+     */
+    public CloudServer() {
         this.port = Integer.parseInt(propertyRead.getProperty("PORT"));
         this.max_obj_size = Integer.parseInt(propertyRead.getProperty("MAX_OBJ_SIZE"));
         this.rootDirUser = propertyRead.getProperty("rootDirUser");
@@ -52,6 +56,7 @@ public class CloudServer {
         } finally {
             mainGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
+            AuthService.disconnect();
         }
     }
 

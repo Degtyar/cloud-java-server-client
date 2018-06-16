@@ -19,6 +19,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -82,6 +83,7 @@ public class Controller implements Initializable {
      * Метод создания обекта пользователя на соновании логина и правлоя
      */
     private boolean setUser() {
+        user = null;
         if(!loginField.getText().equals("") && !passField.getText().equals("")){
             user = new UserCloud(loginField.getText(), passField.getText());
             return true;
@@ -224,11 +226,16 @@ public class Controller implements Initializable {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                Platform.runLater(() -> {
+                    GuiClient(true);
+                    GuiConnect(false);
+                    onConnect.setText("Connect");
+                    listViewServer.clear();
+                    infoMassage("Connection server lost");
+                });
             } finally {
                 try {
                     Network.getInstance().disconnect();
-                    System.out.println("disconnect");
-                    infoMassage("Server disconnect");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -286,7 +293,6 @@ public class Controller implements Initializable {
     public void serverSync() {
         sendFile(listViewClient);
     }
-
 
     /**
      * @param filesInList
@@ -348,6 +354,7 @@ public class Controller implements Initializable {
                 break;
             case "info":
                 infoMassage(((StatusInfo) msg).getMassage());
+                if(((StatusInfo) msg).getMassage().equals("Server disconnect"))
                 break;
             case "fileList":
                 Platform.runLater( () -> {
@@ -469,7 +476,8 @@ public class Controller implements Initializable {
      * Метод отправки ниформационных сообщений клиенту
      */
     private void infoMassage(String massage) {
-        Platform.runLater( () -> statInfo.appendText(massage + "\n"));
+        Platform.runLater( () -> statInfo.appendText(new SimpleDateFormat("HH:mm").format(new Date()) +
+                                                                                            " " + massage + "\n"));
     }
 
     /**
