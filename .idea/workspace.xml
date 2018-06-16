@@ -3,18 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6f5f6381-2729-4b88-8ed4-ebd2c83e4f14" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/Controller.java" afterPath="$PROJECT_DIR$/client/src/main/java/Controller.java" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/java/Network.java" afterPath="$PROJECT_DIR$/client/src/main/java/Network.java" />
-      <change beforePath="$PROJECT_DIR$/client/src/main/resources/client.fxml" afterPath="$PROJECT_DIR$/client/src/main/resources/client.fxml" />
       <change beforePath="$PROJECT_DIR$/client/target/classes/client.fxml" afterPath="$PROJECT_DIR$/client/target/classes/client.fxml" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/AbsMsg.java" afterPath="$PROJECT_DIR$/common/src/main/java/AbsMsg.java" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/CommonClass.java" afterPath="$PROJECT_DIR$/common/src/main/java/CommonClass.java" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/FileList.java" afterPath="$PROJECT_DIR$/common/src/main/java/FileList.java" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/FileMsg.java" afterPath="$PROJECT_DIR$/common/src/main/java/FileMsg.java" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/PropertyRead.java" afterPath="$PROJECT_DIR$/common/src/main/java/PropertyRead.java" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/StatusInfo.java" afterPath="$PROJECT_DIR$/common/src/main/java/StatusInfo.java" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/UserCloud.java" afterPath="$PROJECT_DIR$/common/src/main/java/UserCloud.java" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/CloudServerHandler.java" afterPath="$PROJECT_DIR$/server/src/main/java/CloudServerHandler.java" />
       <change beforePath="$PROJECT_DIR$/server/target/classes/CloudServerHandler.class" afterPath="$PROJECT_DIR$/server/target/classes/CloudServerHandler.class" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -571,7 +560,7 @@
       <workItem from="1528645609815" duration="10331000" />
       <workItem from="1528725761886" duration="128000" />
       <workItem from="1528725924323" duration="3498000" />
-      <workItem from="1528819090121" duration="22676000" />
+      <workItem from="1528819090121" duration="22724000" />
     </task>
     <task id="LOCAL-00001" summary="Переделал авторизацию">
       <created>1528733676451</created>
@@ -615,11 +604,18 @@
       <option name="project" value="LOCAL" />
       <updated>1529080946483</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Изменние интерфейса и добавление документации">
+      <created>1529126288573</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1529126288573</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="144414000" />
+    <option name="totallyTimeSpent" value="144462000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
@@ -714,7 +710,8 @@
     <MESSAGE value="Переделал авторизацию" />
     <MESSAGE value="Переделал" />
     <MESSAGE value="Переделал оправку файлов, отображение меню, сделал возможность создавать пользователя" />
-    <option name="LAST_COMMIT_MESSAGE" value="Переделал оправку файлов, отображение меню, сделал возможность создавать пользователя" />
+    <MESSAGE value="Изменние интерфейса и добавление документации" />
+    <option name="LAST_COMMIT_MESSAGE" value="Изменние интерфейса и добавление документации" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
