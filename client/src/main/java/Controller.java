@@ -26,6 +26,7 @@ import java.util.*;
 /**
  * Класс обработки потока событий на клиенте
  */
+//TODO Реализация редактирования имени файлов
 public class Controller implements Initializable {
     public final int SIZE_SET = 512000;
     public PasswordField passField;

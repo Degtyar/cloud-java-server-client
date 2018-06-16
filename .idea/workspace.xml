@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6f5f6381-2729-4b88-8ed4-ebd2c83e4f14" name="Default" comment="Добавление описани">
+    <list default="true" id="6f5f6381-2729-4b88-8ed4-ebd2c83e4f14" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/client/src/main/java/Controller.java" afterPath="$PROJECT_DIR$/client/src/main/java/Controller.java" />
-      <change beforePath="$PROJECT_DIR$/client/target/classes/Network.class" afterPath="$PROJECT_DIR$/client/target/classes/Network.class" />
-      <change beforePath="$PROJECT_DIR$/common/src/main/java/StatusInfo.java" afterPath="$PROJECT_DIR$/common/src/main/java/StatusInfo.java" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/AbsMsg$TypeMsg.class" afterPath="$PROJECT_DIR$/common/target/classes/AbsMsg$TypeMsg.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/AbsMsg.class" afterPath="$PROJECT_DIR$/common/target/classes/AbsMsg.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/CommonClass.class" afterPath="$PROJECT_DIR$/common/target/classes/CommonClass.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/FileList$TypeRequest.class" afterPath="$PROJECT_DIR$/common/target/classes/FileList$TypeRequest.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/FileList.class" afterPath="$PROJECT_DIR$/common/target/classes/FileList.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/FileMsg.class" afterPath="$PROJECT_DIR$/common/target/classes/FileMsg.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/PropertyRead.class" afterPath="$PROJECT_DIR$/common/target/classes/PropertyRead.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/StatusInfo.class" afterPath="$PROJECT_DIR$/common/target/classes/StatusInfo.class" />
-      <change beforePath="$PROJECT_DIR$/common/target/classes/UserCloud.class" afterPath="$PROJECT_DIR$/common/target/classes/UserCloud.class" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/AuthService.java" afterPath="$PROJECT_DIR$/server/src/main/java/AuthService.java" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/CloudServer.java" afterPath="$PROJECT_DIR$/server/src/main/java/CloudServer.java" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/CloudServerHandler.java" afterPath="$PROJECT_DIR$/server/src/main/java/CloudServerHandler.java" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/server.properties" afterPath="$PROJECT_DIR$/server/src/main/java/server.properties" />
-      <change beforePath="$PROJECT_DIR$/server/target/classes/AuthService.class" afterPath="$PROJECT_DIR$/server/target/classes/AuthService.class" />
-      <change beforePath="$PROJECT_DIR$/server/target/classes/CloudServerHandler.class" afterPath="$PROJECT_DIR$/server/target/classes/CloudServerHandler.class" />
-      <change beforePath="$PROJECT_DIR$/users.db" afterPath="$PROJECT_DIR$/users.db" />
+      <change beforePath="$PROJECT_DIR$/server/target/classes/CloudServer$1.class" afterPath="$PROJECT_DIR$/server/target/classes/CloudServer$1.class" />
+      <change beforePath="$PROJECT_DIR$/server/target/classes/CloudServer.class" afterPath="$PROJECT_DIR$/server/target/classes/CloudServer.class" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -37,14 +21,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Controller.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Controller.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/src/main/java/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="522" column="19" lean-forward="false" selection-start-line="522" selection-start-column="12" selection-end-line="522" selection-end-column="19" />
+            <state relative-caret-position="105">
+              <caret line="28" column="45" lean-forward="false" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="45" />
               <folding>
-                <element signature="e#9666#9667#0" expanded="true" />
-                <element signature="e#9706#9707#0" expanded="true" />
+                <element signature="e#9712#9713#0" expanded="true" />
+                <element signature="e#9752#9753#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,7 +44,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CloudServerHandler.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CloudServerHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/main/java/CloudServerHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="45">
@@ -177,8 +161,8 @@
       <find>openFolder</find>
       <find>setCurrentFolder</find>
       <find>readClientFolder</find>
-      <find>crea</find>
       <find>setUser</find>
+      <find>crea</find>
     </findStrings>
     <replaceStrings>
       <replace>Метод</replace>
@@ -224,8 +208,8 @@
         <option value="$PROJECT_DIR$/server/src/main/java/server.properties" />
         <option value="$PROJECT_DIR$/server/src/main/java/AuthService.java" />
         <option value="$PROJECT_DIR$/server/src/main/java/CloudServer.java" />
-        <option value="$PROJECT_DIR$/client/src/main/java/Controller.java" />
         <option value="$PROJECT_DIR$/server/src/main/java/CloudServerHandler.java" />
+        <option value="$PROJECT_DIR$/client/src/main/java/Controller.java" />
       </list>
     </option>
   </component>
@@ -565,7 +549,7 @@
       <workItem from="1528645609815" duration="10331000" />
       <workItem from="1528725761886" duration="128000" />
       <workItem from="1528725924323" duration="3498000" />
-      <workItem from="1528819090121" duration="26056000" />
+      <workItem from="1528819090121" duration="26231000" />
     </task>
     <task id="LOCAL-00001" summary="Переделал авторизацию">
       <created>1528733676451</created>
@@ -623,15 +607,21 @@
       <option name="project" value="LOCAL" />
       <updated>1529126294911</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Добавление описания">
+      <created>1529129692611</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1529129692611</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="147794000" />
+    <option name="totallyTimeSpent" value="147969000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -646,7 +636,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32969216" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1916972" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1916972" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -694,7 +684,8 @@
     <MESSAGE value="Переделал" />
     <MESSAGE value="Переделал оправку файлов, отображение меню, сделал возможность создавать пользователя" />
     <MESSAGE value="Изменние интерфейса и добавление документации" />
-    <option name="LAST_COMMIT_MESSAGE" value="Изменние интерфейса и добавление документации" />
+    <MESSAGE value="Добавление описания" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление описания" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -965,17 +956,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/src/main/java/Controller.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="522" column="19" lean-forward="false" selection-start-line="522" selection-start-column="12" selection-end-line="522" selection-end-column="19" />
-          <folding>
-            <element signature="e#9666#9667#0" expanded="true" />
-            <element signature="e#9706#9707#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/java/StatusInfo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -989,6 +969,17 @@
         <state relative-caret-position="45">
           <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/src/main/java/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="28" column="45" lean-forward="false" selection-start-line="28" selection-start-column="45" selection-end-line="28" selection-end-column="45" />
+          <folding>
+            <element signature="e#9712#9713#0" expanded="true" />
+            <element signature="e#9752#9753#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
