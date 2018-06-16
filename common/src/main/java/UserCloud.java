@@ -1,15 +1,17 @@
-import sun.security.provider.MD5;
-
+/**
+ * Класс пользователя
+ */
+//TODO шифрование информаци о пользователе
 public class UserCloud extends AbsMsg{
     private String login, pass;
-    private boolean isAuth, creare;
+    private boolean isAuth, create;
 
     public UserCloud(String login, String pass) {
         super(TypeMsg.user);
         this.login = login;
         this.pass = pass;
         this.isAuth = false;
-        this.creare = false;
+        this.create = false;
     }
 
     public String getLogin() {
@@ -28,11 +30,11 @@ public class UserCloud extends AbsMsg{
         return isAuth;
     }
 
-    public boolean isCreare() {
-        return creare;
+    public boolean isCreate() {
+        return create;
     }
 
-    public void setCreare(boolean creare) {
-        this.creare = creare;
+    public void setCreate(boolean creare) {
+        this.create = creare;
     }
 }

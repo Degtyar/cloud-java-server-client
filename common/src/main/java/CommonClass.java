@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Общие вспомогательные методы
+ */
 public class CommonClass {
-    public static final int SIZE_SET = 512000;
 
     public static List<String> pathToList (DirectoryStream<Path> stream ) {
         List<String> result = new ArrayList<>();
@@ -26,22 +28,4 @@ public class CommonClass {
         }
         return list;
     }
-
-    public static void saveFileMsg (FileMsg fileMsg, String folder) {
-        String name = fileMsg.getName();
-        int size = fileMsg.getSize();
-        int set = fileMsg.getSet();
-        byte[] data = fileMsg.getData();
-        try(RandomAccessFile file = new RandomAccessFile(folder + name, "rw")){
-            file.write(data, set * SIZE_SET, SIZE_SET);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void createFileMsg (Path path) {
-
-        byte[] data;
-    }
-
 }

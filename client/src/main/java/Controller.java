@@ -29,10 +29,13 @@ public class Controller implements Initializable {
     public final int SIZE_SET = 512000;
     public PasswordField passField;
     public ListView<String> fileListServer;
-    public ListView<String>fileListClient;
+    public ListView<String> fileListClient;
+    public ObservableList<String> listViewClient = FXCollections.observableArrayList();
+    public ObservableList<String> listViewServer = FXCollections.observableArrayList();
+
     public TextField loginField, pathField, serverField, portField;
     public TextArea statInfo;
-    public Button onConnect, serverSync, openFolder, login;
+    public Button onConnect, serverSync, clientSync, openFolder, login;
     public ProgressBar progressBar;
     public CheckBox chkCreate;
     public Label labelInfo;
@@ -57,6 +60,7 @@ public class Controller implements Initializable {
     /**
      * Метод сохранения полей на клиенте
      */
+    //TODO реализовать сохранение настроек в случае соединения
     public void saveProperty () {
         propertyRead.setProperty("login",loginField.getText());
         propertyRead.setProperty("password",passField.getText());
@@ -70,74 +74,6 @@ public class Controller implements Initializable {
      */
     public void setCurrentFolder() {
         this.currentFolder = pathField.getText();
-    }
-
-
-    /**
-     * @param trigger
-     * Метод доступа к элементам управления блока клиента
-     */
-
-    private void GuiClient(Boolean trigger) {
-        pathField.setDisable(trigger);
-        serverSync.setDisable(trigger);
-        openFolder.setDisable(trigger);
-    }
-
-
-    /**
-     * @param trigger
-     * Метод открытия кнопки создания клиента
-     */
-    private void buttonLoginVisible(Boolean trigger){
-        login.setVisible(trigger);
-        chkCreate.setVisible(trigger);
-    }
-
-
-    /**
-     * @param trigger
-     * Метод управления элементами подключения к серверу
-     */
-    private void GuiConnect (Boolean trigger) {
-        loginField.setDisable(trigger);
-        passField.setDisable(trigger);
-        serverField.setDisable(trigger);
-        portField.setDisable(trigger);
-
-    }
-
-
-    /**
-     * @throws Exception
-     * Метод чтения информации из папки
-     */
-    public void openFolder () throws Exception {
-        setCurrentFolder();
-        readClientFolder();
-    }
-
-
-    /**
-     * Метод чтения содержимого папки пользователя
-     */
-    public void readClientFolder () {
-        Platform.runLater( () -> {
-            try {
-                List<String> result;
-                setCurrentFolder();
-                Path paths = Paths.get(currentFolder);
-                DirectoryStream<Path> stream = Files.newDirectoryStream(paths, path -> path.toFile().isFile());
-                result = CommonClass.pathToList(stream);
-                fileListClient.getItems().clear();
-                ObservableList<String> list = FXCollections.observableArrayList(result);
-                fileListClient.setItems(list);
-                list.add("sgsfgsfdg");
-            } catch (IOException e) {
-                e.printStackTrace();
-                infoMassage("Error read client folder");
-            }
-        });
     }
 
 
@@ -167,15 +103,38 @@ public class Controller implements Initializable {
             e.printStackTrace();
             infoMassage("Ip address not correct");
         }
-
     }
 
     /**
-     * @throws Exception
-     * Метод обработки кнопки подключения к серверу
+     * @param trigger
+     * Метод доступа к элементам управления блока клиента
      */
-    public void tryConnect() throws Exception{
-        connect();
+    private void GuiClient(Boolean trigger) {
+        pathField.setDisable(trigger);
+        serverSync.setDisable(trigger);
+        openFolder.setDisable(trigger);
+        clientSync.setDisable(trigger);
+    }
+
+    /**
+     * @param trigger
+     * Метод открытия кнопки создания клиента
+     */
+    private void buttonLoginVisible(Boolean trigger){
+        login.setVisible(trigger);
+        chkCreate.setVisible(trigger);
+    }
+
+    /**
+     * @param trigger
+     * Метод управления элементами подключения к серверу
+     */
+    private void GuiConnect (Boolean trigger) {
+        loginField.setDisable(trigger);
+        passField.setDisable(trigger);
+        serverField.setDisable(trigger);
+        portField.setDisable(trigger);
+
     }
 
     @Override
@@ -191,9 +150,47 @@ public class Controller implements Initializable {
             setContextMenuServer();
             progressBar.setVisible(false);
             labelInfo.setVisible(false);
+            fileListClient.setItems(listViewClient);
+            fileListServer.setItems(listViewServer);
             readClientFolder ();
-            fileListClient.setEditable(true);
         });
+    }
+
+    /**
+     * @throws Exception
+     * Метод чтения информации отображение информации в папке клиента
+     */
+    public void openFolder () {
+        setCurrentFolder(); //чтение значения из поля папки
+        readClientFolder(); //отображение информации в папке
+    }
+
+    /**
+     * Метод чтения содержимого папки пользователя
+     */
+    public void readClientFolder () {
+        Platform.runLater( () -> {
+            try {
+                List<String> result;
+                setCurrentFolder();
+                Path paths = Paths.get(currentFolder);
+                DirectoryStream<Path> stream = Files.newDirectoryStream(paths, path -> path.toFile().isFile());
+                result = CommonClass.pathToList(stream);
+                listViewClient.clear();
+                listViewClient.addAll(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+                infoMassage("Error read client folder :" + currentFolder );
+            }
+        });
+    }
+
+    /**
+     * @throws Exception
+     * Метод обработки кнопки подключения к серверу
+     */
+    public void tryConnect() throws Exception{
+        connect();
     }
 
     /**
@@ -222,7 +219,6 @@ public class Controller implements Initializable {
                         }
                     });
                 }
-
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
 
@@ -230,7 +226,7 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             } finally {
                 try {
-                    Network.getInstance().disconect();
+                    Network.getInstance().disconnect();
                     System.out.println("disconnect");
                     infoMassage("Server disconnect");
                 } catch (Exception e) {
@@ -239,29 +235,27 @@ public class Controller implements Initializable {
             }
         });
 
-        if(!setUser()) return;
+        if(!setUser()) return; // не подключаться если параметры не определены
         setParamConnect();
-
+        // обработчик событий на отключение
         if (onConnect.getText().equals("Disconnect")) {
             thread.interrupt();
             user = null;
             Platform.runLater(() -> {
-                fileListServer.getItems().clear();
+                listViewServer.clear();
                 GuiClient(true);
                 GuiConnect(false);
                 buttonLoginVisible(false);
                 onConnect.setText("Connect");
             });
             sendMsgToServer(new StatusInfo("reset_connect"));
-
         }
-
+        // подключение
         if (!Network.getInstance().isConnected()) {
             try {
                 Network.getInstance().connect(ipAddress, serverPort);
                 infoMassage("Server connect");
                 Platform.runLater( () -> onConnect.setText("Disconnect"));
-
                 thread.setDaemon(true);
                 thread.start();
                 setUser();
@@ -272,7 +266,6 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         }
-
     }
 
 
@@ -290,10 +283,8 @@ public class Controller implements Initializable {
      * @throws Exception
      * Метод отправки содержимого папки клиента в сторону сервера
      */
-    public void serverSync () throws Exception{
-        ObservableList<String> filesInList =  fileListClient.getItems();
-
-        sendFile(filesInList);
+    public void serverSync() {
+        sendFile(listViewClient);
     }
 
 
@@ -302,32 +293,33 @@ public class Controller implements Initializable {
      * @throws Exception
      * Метод оправки файлов в сторону сервера
      */
-    public void sendFile(ObservableList<String> filesInList) throws Exception {
+    public void sendFile(ObservableList<String> filesInList) {
         Thread thread;
-        thread = new Thread(() -> {
+        thread = new Thread(() -> { // в отдельный поток для работы интерфейса
             try {
                 Platform.runLater(() -> {
                     progressBar.setVisible(true);
                     labelInfo.setVisible(true);
                 });
-                String info;
                 FileMsg file;
                 byte[] data;
-                int size, set;
+                int size, set, startCopy, endCopy ;
+
                 for (String nameFile : filesInList) {
                     Path fileLocation = Paths.get(currentFolder + "/" + nameFile);
                     data = Files.readAllBytes(fileLocation);
                     size = (int) Math.ceil((float) data.length / SIZE_SET);
-                    System.out.println("Send file : " + nameFile + "-" + data.length + " \\ " + size);
                     for (set = 0; set < size; set++) {
                         final double progress = (double) set / size;
+
                         Platform.runLater(() -> {
                             progressBar.setProgress(progress);
-
                             labelInfo.setText(nameFile.length() > 25 ? nameFile.substring(0,22) + "..." : nameFile);
                         });
-                        int startCopy = set * SIZE_SET;
-                        int endCopy = (startCopy + SIZE_SET) > data.length ? data.length : startCopy + SIZE_SET;
+                        //задание параметров
+                        startCopy = set * SIZE_SET;
+                        endCopy = (startCopy + SIZE_SET) > data.length ? data.length : startCopy + SIZE_SET;
+                        //отправка файлов на сервер
                         file = new FileMsg(nameFile, Arrays.copyOfRange(data, startCopy, endCopy), set, size - 1);
                         sendMsgToServer(file);
                     }
@@ -347,7 +339,7 @@ public class Controller implements Initializable {
 
     /**
      * @param msg
-     * Метод обработки событий от сервера
+     * Метод обработки событий и реакции событий от сервера
      */
     private void controllerMsg (Object msg) {
         switch (((AbsMsg) msg).getTypeMsg()) {
@@ -360,8 +352,8 @@ public class Controller implements Initializable {
             case "fileList":
                 Platform.runLater( () -> {
                     try {
-                        fileListServer.getItems().clear();
-                        fileListServer.setItems(FXCollections.observableArrayList(((FileList) msg).getListFile()));
+                        listViewServer.clear();
+                        listViewServer.addAll(((FileList) msg).getListFile());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -377,7 +369,6 @@ public class Controller implements Initializable {
         }
     }
 
-
     /**
      * Метод создания контекстного меню экрана клиента и обработки событий
      */
@@ -390,7 +381,7 @@ public class Controller implements Initializable {
                 ObservableList<String> files = fileListClient.getSelectionModel().getSelectedItems();
                 System.out.println(files.toString());
                 for (String fileName : files) {
-                    fileName = currentFolder + "/" + fileName;
+                    fileName = currentFolder + fileName;
                     System.out.println(fileName);
                     File file = new File(fileName);
                     if (file.delete()) {
@@ -408,7 +399,7 @@ public class Controller implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 if (user != null && user.isAuth()) {
-                    ObservableList<String> files = fileListClient.getSelectionModel().getSelectedItems();
+                   ObservableList<String> files = fileListClient.getSelectionModel().getSelectedItems();
                     try {
                         sendFile(files);
                     } catch (Exception e) {
@@ -486,34 +477,32 @@ public class Controller implements Initializable {
      * @throws Exception
      * Метод записи файла на клиента
      */
-//    private void writeFile (Object msg) throws Exception{
-//        FileMsg fileMsg = (FileMsg) msg;
-//        File file = new File(currentFolder + fileMsg.getName());
-//        System.out.println(file);
-//        file.createNewFile();
-//        FileOutputStream stream = new FileOutputStream(file,false);
-//        try {
-//            stream.write(fileMsg.getData());
-//        } catch (Exception e) {
-//            infoMassage("error: " + fileMsg.getName());
-//        }
-//        finally {
-//            stream.close();
-//        }
-//        infoMassage("copy: " + fileMsg.getName());
-//    }
-
     public void writeFile (Object msg) {
         FileMsg fileMsg = (FileMsg) msg;
         String folder = currentFolder;
-        String name = fileMsg.getName();
+        String nameFile= fileMsg.getName();
         int size = fileMsg.getSize();
         int set = fileMsg.getSet();
         byte[] data = fileMsg.getData();
-        System.out.println(folder  + "/" + name);
-        try(RandomAccessFile file = new RandomAccessFile(folder  + "/" + name, "rw")){
+        System.out.println(folder  + "/" + nameFile);
+        try(RandomAccessFile file = new RandomAccessFile(folder  + "/" + nameFile, "rw")){
+            if(size > 2){
+                Platform.runLater(() -> {
+                    progressBar.setVisible(true);
+                    labelInfo.setVisible(true);
+                    progressBar.setProgress((double) set / size);
+                    labelInfo.setText(nameFile.length() > 25 ? nameFile.substring(0,22) + "..." : nameFile);
+                });
+            }
             file.seek(set * SIZE_SET);
             file.write(data);
+            if(set == size) {
+                Platform.runLater(() -> {
+                    progressBar.setVisible(false);
+                    labelInfo.setVisible(false);
+                });
+                infoMassage("receive file: " + nameFile);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -523,8 +512,8 @@ public class Controller implements Initializable {
      * Метод создание нового пользователя на сервере
      */
     public void loginUser() {
-        setUser();
-        if(chkCreate.isSelected()) user.setCreare(true);
+        if(!setUser())return;
+        if(chkCreate.isSelected()) user.setCreate(true);
         try {
             sendMsgToServer(user);
         }catch (Exception e){
@@ -533,9 +522,16 @@ public class Controller implements Initializable {
         }
     }
 
-    public void onEdit(ListView.EditEvent<String> stringEditEvent) {
-        String str = fileListClient.getSelectionModel().getSelectedItem();
-
-        System.out.println(str);
+    /**
+     * Метод запроса всех файлов от клиента
+     */
+    public void clientSync() {
+        FileList fileList = new FileList(CommonClass.obsToList(listViewServer), FileList.TypeRequest.copy);
+        try {
+            sendMsgToServer(fileList);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
 }

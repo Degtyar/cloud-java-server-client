@@ -67,7 +67,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
         switch (((AbsMsg) msg).getTypeMsg()) {
             case "user" :
                 user = (UserCloud) msg;
-                if(user.isCreare()) {
+                if(user.isCreate()) {
                     if (createUserResource(user)){
                         ctx.write(new StatusInfo("Resource create"));
                     } else {
@@ -151,6 +151,8 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
             if(set == size) {
                 ctx.write(getUserFile());
                 ctx.flush();
+                ctx.write(new StatusInfo("copy: " + name));
+                ctx.flush();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,7 +200,7 @@ public class CloudServerHandler extends ChannelInboundHandlerAdapter {
             for (set = 0; set < size; set++){
                 int startCopy = set * SIZE_SET;
                 int endCopy = (startCopy + SIZE_SET) > data.length ? data.length : startCopy + SIZE_SET;
-                file = new FileMsg(nameFile, Arrays.copyOfRange(data, startCopy, endCopy),set ,size);
+                file = new FileMsg(nameFile, Arrays.copyOfRange(data, startCopy, endCopy),set ,size - 1);
                 ctx.write(file);
                 ctx.flush();
             }

@@ -1,6 +1,11 @@
 import java.io.Serializable;
 
+/**
+ * Абстрактный класс сообщений
+ */
 public abstract class AbsMsg implements Serializable {
+
+
     protected enum TypeMsg {
         user,
         sync,

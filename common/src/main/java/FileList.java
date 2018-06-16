@@ -1,5 +1,8 @@
 import java.util.List;
 
+/**
+ * Класс списков файлов для запроса удаления или обновления информации
+ */
 public class FileList extends AbsMsg {
     protected enum TypeRequest{
         info,

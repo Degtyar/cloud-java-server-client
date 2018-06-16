@@ -25,6 +25,12 @@ public class Network {
         return socket != null && !socket.isClosed();
     }
 
+    /**
+     * @param address
+     * @param port
+     * @throws Exception
+     * Метод подключения к серверу
+     */
     public void connect(InetAddress address, int port) throws Exception {
         socket = new Socket(address,port);
         in = new ObjectDecoderInputStream(socket.getInputStream(),MAX_OBJ_SIZE);
@@ -32,16 +38,31 @@ public class Network {
 
     }
 
+    /**
+     * @param msg
+     * @throws Exception
+     * Метод отправки сообщений
+     */
     public void sendObject (AbsMsg msg) throws Exception {
         out.writeObject(msg);
         out.flush();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * Метод чтения сообщений
+     */
     public Object readObject () throws IOException, ClassNotFoundException {
         return in.readObject();
     }
 
-    public void disconect () throws Exception {
+    /**
+     * @throws Exception
+     * Метод закрытия соединений
+     */
+    public void disconnect () throws Exception {
         socket.close();
     }
 }

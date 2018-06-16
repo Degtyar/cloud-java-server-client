@@ -19,7 +19,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="122.0" prefWidth="297.0">
                <children>
-                  <ListView fx:id="fileListClient" editable="true" layoutX="14.0" layoutY="-24.0" onEditCommit="#onEdit" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ListView fx:id="fileListClient" editable="true" layoutX="14.0" layoutY="-24.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
@@ -29,13 +29,14 @@
       </SplitPane>
       <Pane prefHeight="110.0" prefWidth="600.0">
          <children>
-            <Button fx:id="openFolder" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#openFolder" prefHeight="32.0" prefWidth="167.0" text="Open" />
-            <Button fx:id="serverSync" layoutX="397.0" layoutY="47.0" mnemonicParsing="false" onAction="#serverSync" prefHeight="32.0" prefWidth="152.0" text="Sync all files" />
-            <TextField fx:id="pathField" layoutX="14.0" layoutY="20.0" onAction="#openFolder" promptText="Folder" />
+            <Button fx:id="openFolder" layoutX="182.0" layoutY="63.0" mnemonicParsing="false" onAction="#openFolder" prefHeight="32.0" prefWidth="167.0" text="Open" />
+            <Button fx:id="serverSync" layoutX="15.0" layoutY="22.0" mnemonicParsing="false" onAction="#serverSync" prefHeight="32.0" prefWidth="167.0" text="Send all to Server" />
+            <TextField fx:id="pathField" layoutX="15.0" layoutY="63.0" onAction="#openFolder" prefHeight="32.0" prefWidth="167.0" promptText="Folder" />
             <Label layoutX="98.0" prefHeight="18.0" prefWidth="72.0" text="File client" />
             <Label layoutX="401.0" prefHeight="18.0" prefWidth="72.0" text="File server" />
-            <ProgressBar fx:id="progressBar" layoutX="224.0" layoutY="10.0" prefHeight="20.0" prefWidth="152.0" progress="0.0" />
-            <Label fx:id="labelInfo" layoutX="224.0" layoutY="38.0" text="Label" />
+            <ProgressBar fx:id="progressBar" layoutX="224.0" layoutY="22.0" prefHeight="20.0" prefWidth="152.0" progress="0.0" />
+            <Label fx:id="labelInfo" layoutX="224.0" layoutY="1.0" text="Label" />
+            <Button fx:id="clientSync" layoutX="390.0" layoutY="22.0" mnemonicParsing="false" onAction="#clientSync" prefHeight="32.0" prefWidth="167.0" text="Send all to Client" />
          </children>
       </Pane>
       <Pane layoutX="10.0" layoutY="170.0" prefHeight="128.0" prefWidth="600.0">
@@ -45,8 +46,8 @@
             <TextField fx:id="serverField" layoutX="181.0" layoutY="21.0" promptText="Server" text="localhost" />
             <TextField fx:id="portField" layoutX="181.0" layoutY="47.0" promptText="Port" text="8888" />
             <Button fx:id="onConnect" layoutX="181.0" layoutY="74.0" mnemonicParsing="false" onAction="#tryConnect" prefHeight="34.0" prefWidth="167.0" text="Connect" />
-            <TextArea fx:id="statInfo" layoutX="383.0" layoutY="1.0" prefHeight="101.0" prefWidth="213.0" />
-            <Label layoutX="383.0" layoutY="105.0" prefHeight="18.0" prefWidth="152.0" text="Connection status" />
+            <TextArea fx:id="statInfo" layoutX="350.0" layoutY="1.0" prefHeight="110.0" prefWidth="246.0" />
+            <Label layoutX="350.0" layoutY="111.0" prefHeight="18.0" prefWidth="152.0" text="Connection status" />
             <Button fx:id="login" layoutX="14.0" layoutY="74.0" mnemonicParsing="false" onAction="#loginUser" prefHeight="34.0" prefWidth="167.0" text="Login" />
             <CheckBox fx:id="chkCreate" layoutX="14.0" layoutY="1.0" mnemonicParsing="false" text="Create User" />
          </children>

@@ -3,13 +3,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Класс для четения информации из файлов настроек
+ */
 public class PropertyRead {
     private String pathToProperty;
     private Properties property;
 
     public PropertyRead(String pathToProperty) {
         this.pathToProperty = pathToProperty;
-        this.property = readSetProperty ();
+        this.property = readSetProperty();
         }
 
     private Properties readSetProperty (){
